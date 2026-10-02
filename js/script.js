@@ -2,9 +2,6 @@
    WEDDING CONFIG — edit everything here.
    The whole website reads its text from this object.
    ========================================================= */
-// Google Maps link for "At Our Residence" (used by Haldi, Mehendi and Sangeet)
-const RESIDENCE_MAP = "https://www.google.com/maps?q=30.042095184326172,76.31584930419922&z=17&hl=en";
-
 const weddingConfig = {
 
   groom: "Dushyant",
@@ -61,39 +58,6 @@ const weddingConfig = {
   story: [
     { image: "assets/images/couple-1.jpg", title: "Dushyant & Preeti", focus: "52% 58%", zoom: 1.3 },
     { image: "assets/images/couple-2.jpg", title: "Together, always", focus: "54% 62%", zoom: 1.45 }
-  ],
-
-  // Wedding events — image is optional (leave "" for an illustrated card)
-  events: [
-    {
-      name: "Haldi", hindi: "हल्दी", accent: "#E9C98B",
-      date: "23 November 2026",
-      venue: "At Our Residence", mapUrl: RESIDENCE_MAP,
-      description: "A morning of turmeric, sunshine and laughter as we are blessed for the days ahead.",
-      image: "assets/images/haldi.webp"
-    },
-    {
-      name: "Mehendi", hindi: "मेहंदी", accent: "#AFC5B8",
-      date: "22 November 2026",
-      venue: "At Our Residence", mapUrl: RESIDENCE_MAP,
-      description: "Intricate henna, soulful songs and an evening painted in love.",
-      image: "assets/images/mehendi.webp"
-    },
-    {
-      name: "Sangeet", hindi: "संगीत", accent: "#E7B7AE",
-      date: "23 November 2026",
-      venue: "At Our Residence", mapUrl: RESIDENCE_MAP,
-      description: "Music, dance and celebration under the stars with our favourite people.",
-      image: "assets/images/sangeet.webp"
-    },
-    {
-      name: "Barat", hindi: "बारात", accent: "#D7B46A",
-      date: "24 November 2026",
-      venue: "Bansal Palace, Barara",
-      mapUrl: "https://www.google.com/maps/dir//Bansal+Palace,+62FX%2BGC3,+Barara+Rd,+Barara,+Sharaqpur,+Haryana+133201/@30.7630348,76.652822,15z/data=!4m8!4m7!1m0!1m5!1m1!1s0x390e53f6654c9cd7:0x9e645bdd08d478af!2m2!1d77.0485431!2d30.2237584?entry=ttu&g_ep=EgoyMDI2MDkyOS4wIKXMDSoASAFQAw%3D%3D",
-      description: "The groom's grand procession, with music, dhol and dancing all the way to forever.",
-      image: "assets/images/barat.webp"
-    }
   ]
 
 };
@@ -306,35 +270,6 @@ const weddingConfig = {
     stage.addEventListener("pointercancel", end);
   })();
 
-  /* ---------- Events ---------- */
-  const eventsEl = $("[data-events]");
-  eventsEl.innerHTML = C.events.map((e, i) => `
-    <article class="event" data-reveal style="--d:${(i % 2) * 0.12}s;${e.accent ? `--accent:${esc(e.accent)}` : ""}">
-      <div class="event-media">
-        <svg class="em-floral" viewBox="-160 -160 320 320" aria-hidden="true"><use href="#cluster" x="-160" y="-160" width="320" height="320" transform="rotate(${i * 70})" /></svg>
-        ${e.image ? `<img src="${esc(e.image)}" alt="${esc(e.name)}" loading="lazy" decoding="async" />` : ""}
-      </div>
-      <div class="event-body">
-        ${e.hindi ? `<p class="event-hindi" lang="hi">${esc(e.hindi)}</p>` : ""}
-        <h3>${esc(e.name)}</h3>
-        <ul class="event-meta">
-          ${e.date ? `<li><svg class="ic"><use href="#i-cal" /></svg>${esc(e.date)}</li>` : ""}
-          ${e.time ? `<li><svg class="ic"><use href="#i-clock" /></svg>${esc(e.time)}</li>` : ""}
-          ${e.venue ? (/^https?:/i.test(e.mapUrl || "")
-            ? `<li><a class="venue-link" href="${esc(e.mapUrl)}" target="_blank" rel="noopener" aria-label="${esc(e.venue)} – open in Google Maps"><svg class="ic"><use href="#i-pin" /></svg><span>${esc(e.venue)}</span><svg class="ic go"><use href="#i-arrow" /></svg></a></li>`
-            : `<li><svg class="ic"><use href="#i-pin" /></svg>${esc(e.venue)}</li>`) : ""}
-        </ul>
-        ${e.description ? `<p class="event-desc">${esc(e.description)}</p>` : ""}
-      </div>
-    </article>`).join("");
-
-  $$(".event-media img", eventsEl).forEach((img) => {
-    const done = () => img.classList.add("loaded");
-    if (img.complete && img.naturalWidth) done();
-    img.addEventListener("load", done, { once: true });
-    img.addEventListener("error", () => img.remove(), { once: true });
-  });
-
   /* ---------- Ambient background (petals, gold dust, mandala) ---------- */
   $$("[data-ambient]").forEach((sec, si) => {
     const dark = sec.dataset.ambient === "dark";
@@ -348,24 +283,6 @@ const weddingConfig = {
         <div class="amb-dust"></div>
       </div>`);
   });
-
-  /* ---------- Events carousel dots (mobile) ---------- */
-  (() => {
-    const grid = $("[data-events]");
-    const dotsEl = $(".event-dots");
-    if (!grid || !dotsEl) return;
-    const cards = $$(".event", grid);
-    dotsEl.innerHTML = cards.map(() => "<i></i>").join("");
-    const dots = $$("i", dotsEl);
-    const update = () => {
-      const mid = grid.scrollLeft + grid.clientWidth / 2;
-      let best = 0, bestD = Infinity;
-      cards.forEach((c, i) => { const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (d < bestD) { bestD = d; best = i; } });
-      dots.forEach((d, i) => d.classList.toggle("on", i === best));
-    };
-    grid.addEventListener("scroll", () => requestAnimationFrame(update), { passive: true });
-    update();
-  })();
 
   /* ---------- Scroll reveal ---------- */
   const revealObs = new IntersectionObserver((entries) => {
