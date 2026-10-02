@@ -2269,3 +2269,24 @@ html.gated .hero, html.gated .hero * { animation-play-state: paused !important; 
 @media (prefers-reduced-motion: reduce) {
   .gate.opening { opacity: 0; transition: opacity .3s ease; }
 }
+
+
+/* ---- Shri Ganesh emblem on the invitation ---- */
+.invite .ganesh {
+  display: block;
+  width: clamp(66px, 11vh, 100px);
+  height: auto;
+  aspect-ratio: 200 / 220;
+  margin: 0 auto clamp(6px, 1.2vh, 12px);
+  overflow: visible;
+  filter: drop-shadow(0 4px 10px rgba(201, 164, 92, .25));
+}
+.invite .ganesh.in { animation: ganeshGlow 4s ease-in-out 1.4s infinite alternate; }
+@keyframes ganeshGlow {
+  from { filter: drop-shadow(0 4px 10px rgba(201, 164, 92, .2)); }
+  to { filter: drop-shadow(0 4px 18px rgba(224, 186, 104, .55)); }
+}
+@media (min-width: 900px) {
+  .invite-inner { padding-top: clamp(70px, 9vh, 96px); }
+}
+@media (max-width: 899px) { .invite .ganesh { width: clamp(58px, 9vh, 84px); margin-bottom: 4px; } }
